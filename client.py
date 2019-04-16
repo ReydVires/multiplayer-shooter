@@ -8,10 +8,11 @@ WIN = pygame.display.set_mode((winWidth, winHeight))
 pygame.display.set_caption("Shooter")
 font = pygame.font.SysFont("comicsansms", 16)
 players = [None, None]
+is_winner = None
 
 
 def redraw_window(win, _players):
-    win.fill((255, 255, 255))
+    win.fill((232, 236, 241))
     # draw the player and bullet relative client
     for i in range(len(_players)):
         _players[i].draw(win)
@@ -19,16 +20,16 @@ def redraw_window(win, _players):
         if _players[i].is_fire:
             _players[i].bullet.draw(win)
             other_player = _players[other_num]
-            if _players[i].bullet.is_collided_with(win, other_player):
+            if _players[i].bullet.is_collided_with(other_player):
                 other_player.damaged()
         # rendering the font based on id (dir)
-        if _players[i].dir == -1:
+        if _players[i].pid == 1:
             actual_player = 1
-            text = font.render('Player' + str(actual_player) + ' health: ' + str(_players[other_num].health), True, (0, 128, 0))
+            text = font.render('PLAYER{} HP: {} left'.format(actual_player, _players[other_num].health), True, (140, 20, 252))
             WIN.blit(text, (25, 20 - text.get_height()/2))
         else:
             actual_player = 2
-            text = font.render('Player' + str(actual_player) + ' health: ' + str(_players[other_num].health), True, (0, 128, 0))
+            text = font.render('PLAYER{} HP: {} left'.format(actual_player, _players[other_num].health), True, (107, 185, 240))
             WIN.blit(text, (winWidth - (text.get_width() + 25), winHeight - 20 - text.get_height()/2))
         # check whois dead
         is_dead(_players[i], actual_player)
@@ -36,15 +37,18 @@ def redraw_window(win, _players):
 
 
 def is_dead(player, p_id):
-    if player.is_destroy:
-        player.color = (255, 255, 255)
-        winner(p_id)  # display winner text
+    global is_winner
+    if player.is_destroy and not is_winner:
+        is_winner = p_id
+    elif is_winner == p_id:
+        player.color = (232, 236, 241)
+        winner(is_winner)  # display winner text
 
 
 def winner(id):
     font_win = pygame.font.SysFont("comicsansms", 40)
-    text = font_win.render('Player' + str(id) + ' WON!', True, (0, 0, 0))
-    WIN.blit(text, (winWidth/2 - (text.get_width()/2), winHeight/2 - text.get_height()/2))
+    text = font_win.render('PLAYER' + str(id) + ' WON!', True, (0, 0, 0))
+    WIN.blit(text, (winWidth/2 - (text.get_width()/2), winHeight/2 - text.get_height()))
 
 
 def main():
@@ -60,7 +64,7 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
-        players[0].update((0, winWidth), WIN)  # player bound screen: 0px to 500px
+        players[0].update((0, winWidth))  # player bound screen: 0px to 500px
         redraw_window(WIN, players)
 
 

@@ -4,7 +4,8 @@ from bullet import Bullet
 
 class Player:
     """Make an object of Player"""
-    def __init__(self, x, y, width, height, color, bullet_dir=1):
+    def __init__(self, pid, x, y, width, height, color, bullet_dir=1):
+        self.pid = pid  # player id
         self.x = x
         self.y = y
         self.width = width
@@ -29,7 +30,7 @@ class Player:
         else:
             self.health = hp
 
-    def update(self, bounds, win):
+    def update(self, bounds):
         keys = pygame.key.get_pressed()
         bound_left = bounds[0]
         bound_right = bounds[1] - self.width
@@ -46,16 +47,16 @@ class Player:
 
         if self.is_fire and self.bullet:
             if (self.bullet.y < bounds[1]) and (self.bullet.y > bounds[0]):
-                self.bullet.update(win)
+                self.bullet.update()
             else:
                 del self.bullet
-                print('Deleted bullet')
+                print('Deleted bullet from pid: {}'.format(self.pid))
                 self.is_fire = False
 
         self.draw_update()
 
     def shoot(self):
-        return Bullet(self, self.dir)
+        return Bullet(self)
 
     def draw_update(self):
         self.rect = (self.x, self.y, self.width, self.height)

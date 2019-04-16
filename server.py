@@ -15,18 +15,17 @@ sock.listen(2)
 print("Server Started, waiting for a connection...")
 current_player = 0
 players = [
-    Player(225, 50, 50, 50, (255, 0, 0)),  # obj Player1
-    Player(225, 400, 50, 50, (0, 0, 255), -1)  # obj Player2
+    Player(0, 225, 50, 50, 50, (140, 20, 252)),  # obj Player1
+    Player(1, 225, 400, 50, 50, (107, 185, 240), -1)  # obj Player2
 ]
 
 
 def threaded_client(connection, player_num):
-    # thread for individual client behavior
-    # TODO: Instead of dir, use id for player_num!
-    # TODO: Play after 2 connected
+    # TODO: Check Play after 2 client connected
     # TODO: Handling if 1 is disconnected
     # TODO: Restart game
     # TODO: Another game with ID
+    # thread for individual client behavior
     connection.send(pickle.dumps(players[player_num]))
     while True:
         try:
@@ -53,6 +52,7 @@ def threaded_client(connection, player_num):
 
 while True:
     conn, addr = sock.accept()
+    print('Total current player is {}'.format(current_player))
     print("Connected to", addr)
     start_new_thread(threaded_client, (conn, current_player,))
     current_player += 1  # everytime player/client added, player sum up

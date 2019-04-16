@@ -23,6 +23,10 @@ players = [
 def threaded_client(connection, player_num):
     # thread for individual client behavior
     # TODO: Instead of dir, use id for player_num!
+    # TODO: Play after 2 connected
+    # TODO: Handling if 1 is disconnected
+    # TODO: Restart game
+    # TODO: Another game with ID
     connection.send(pickle.dumps(players[player_num]))
     while True:
         try:
@@ -38,7 +42,7 @@ def threaded_client(connection, player_num):
                 else:
                     reply = players[1]
                 print("Received:", data)
-                print('DEBUG: player', player_num, "| hp:", reply.health)
+                print("Debug: player {}, hp {}".format(player_num, reply.health))
             print("Sending:", reply)
             connection.sendall(pickle.dumps(reply))
         except error:
